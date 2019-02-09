@@ -46,11 +46,26 @@
 								<div class="card mt-2 px-4 py-3 my-message">
 									<h5 class="text-white d-inline-block m-0 message-name font-weight-bold font-default">{{ message.member.name }}</h5>
 									<p class="text-white d-inline-block m-0 message-text font-default">{{ message.text }}</p>
+
+                                  <!--
+                                       @author Junghyun
+                                       @brief clap element added
+                                   -->
+                                    <div class="clap-wrapper">
+                                        <span class="badge badge-pill badge-primary clap-btn" data-message-pk="{{ message.pk }}">👏 <span class="clap-count">{{ message.claps.count }}</span></span>
+                                    </div>
 								</div>
 							{% else %}
 								<div class="card mt-2 px-4 py-3">
 									<h5 class="d-inline-block m-0 message-name font-weight-bold font-default">{{ message.member.name }}</h5>
-									<p class="d-inline-block m-0 message-text font-default">{{ message.text }}</p>
+									<p class="d-inline-block m-0 message-text font-default">{{ message.text }} </p>
+                                    <!--
+                                        @author Junghyun
+                                        @brief clap element added
+                                    -->
+                                    <div class="clap-wrapper">
+                                        <span class="badge badge-pill badge-primary clap-btn" data-message-pk="{{ message.pk }}">👏 <span class="clap-count">{{ message.claps.count }}</span></span>
+                                    </div>
 								</div>
 							{% endif %}
 						{% endfor %}
@@ -140,6 +155,27 @@
 		          }
 		          fetches = 0;
 		      }, 2000);
+
+          /**
+           * @author Junghyun
+           * @brief clap click event bind
+           */
+          $(".clap-btn").click(function(){
+              const messageId = $(this).data("messagePk");
+              const clapCountWrapper = $(this).find(".clap-count");
+              event.preventDefault();
+              $.ajax({
+                  type: "POST",
+                  // TODO: change below strings to template url...
+                  url: "gu/ajax/room/" + "{{ room.pk }}" + "/message/" + messageId,
+                  data: messageForm.serialize(),
+                  success: function (msg) {
+                      clapCountWrapper.text(parseInt(clapCountWrapper.text()) + 1);
+
+                  },
+              });
+              return false;
+          });
       });
 	</script>
 {% endblock %}

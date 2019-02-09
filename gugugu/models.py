@@ -98,3 +98,16 @@ class Message(models.Model):
 
     def __str__(self):
         return 'Message from {} in {} on {}'.format(self.member.name, self.room.name, self.date_sent.strftime('%x %X'))
+
+
+'''
+    @author Junghyun
+    @brief clap model added
+'''
+class Clap(models.Model):
+    message = models.ForeignKey(Message, related_name='claps', on_delete=models.CASCADE)
+    member = models.ForeignKey(Member, related_name='claps', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(_('Date Created'), default=timezone.now, editable=False)
+
+    def __str__(self):
+        return '{} claps {} message'.format(self.member.name, self.member.text)

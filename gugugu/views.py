@@ -121,8 +121,31 @@ def room_ajax(request, pk):
         data['messages'].append({
             'sender': message.member.name,
             'text': message.text,
+            'claps': message.claps,
         })
 
+    return JsonResponse(data)
+
+
+'''
+    @author Junghyun
+    @brief clap ajax added
+'''
+def clap_ajax(request, room_id, message_id):
+    room = get_object_or_404(Room, pk=room_id)
+    message = get_object_or_404(Message, pk=message_id)
+    member = get_object_or_404(Member, room=room, session_key=request.session.session_key)
+
+    if request.method == 'POST':
+        clap = Clap(message=message, member=member)
+        clap.save()
+        room.date_updated = timezone.now()
+
+    room.save()
+    data = {
+        'memberId': member.id,
+        'messageId': message.id,
+    }
     return JsonResponse(data)
 
 
